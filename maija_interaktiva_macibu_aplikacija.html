@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maija — interaktīva literatūras mācību spēle</title>
+<style>
+:root{--navy:#12385a;--blue:#2584db;--cream:#fffaf0;--green:#dff5df;--purple:#eee3fb;--yellow:#fff0b8}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f6fbff;color:#17324d}
+header{background:linear-gradient(90deg,#153b50,#246477);color:white;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:clamp(23px,4vw,38px)}header b{color:#ffd24a}.score{font-weight:bold;white-space:nowrap}
+nav{display:flex;gap:8px;padding:12px 4%;overflow:auto;background:white;border-bottom:1px solid #ddd;position:sticky;top:70px;z-index:4}
+nav button,.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:700;cursor:pointer;background:#e8f2ff;color:#164d7c;font-size:15px}.btn.primary,nav button.active{background:#2584db;color:white}
+main{max-width:1180px;margin:auto;padding:24px}.page{display:none}.page.active{display:block}
+.hero{background:linear-gradient(135deg,#e8f5ff,#fff5d9);padding:25px;border-radius:22px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}.card{background:white;border-radius:18px;padding:18px;box-shadow:0 5px 18px #17426a16;border:1px solid #e5edf4}
+.comic{padding:0;overflow:hidden}.comic .art{height:145px;display:flex;align-items:center;justify-content:center;font-size:72px;background:linear-gradient(145deg,#bce5ff,#e8ffd5)}.comic .txt{padding:15px;line-height:1.45}.num{position:absolute;margin:10px;background:white;border-radius:50%;padding:7px 11px;font-weight:bold}
+.poem{background:linear-gradient(135deg,#f7eaff,#fff);font-family:Georgia,serif;line-height:1.65;font-size:18px}.poem h3{font-family:Arial,sans-serif}.small{font-size:14px;color:#60758a}
+.qbox{max-width:800px;margin:auto}.answers button{width:100%;margin:7px 0;text-align:left;border:2px solid #d9e8f5;background:white;border-radius:14px;padding:14px;font-size:16px;cursor:pointer}.answers button:hover{border-color:#2584db}.good{background:#dff7e5!important;border-color:#2ca65a!important}.bad{background:#ffe4e4!important;border-color:#df4d4d!important}.feedback{padding:14px;border-radius:13px;background:#fff4c9;margin-top:12px;display:none;line-height:1.45}.progress{height:12px;background:#e6edf4;border-radius:9px;overflow:hidden;margin:12px 0}.progress div{height:100%;background:#34a36f;width:0}.word{background:#fff;border-left:6px solid #7c4dcc}.challenge{background:#eaf8ff;border-left:6px solid #2584db}.center{text-align:center}
+@media(max-width:650px){header{position:relative}nav{top:0}.comic .art{height:120px}main{padding:14px}}
+</style></head>
+<body>
+<header><h1>📖 <b>Maija</b> — “Pārvērtības”</h1><div class="score">⭐ <span id="stars">0</span> punkti</div></header>
+<nav>
+<button data-page="story" class="active">📚 Stāsts</button><button data-page="poems">🎵 Dzejoļi</button><button data-page="words">💬 Vārdi</button><button data-page="book">✍️ Grāmatas jautājumi</button><button data-page="quiz">🎯 Tests</button>
+</nav>
+<main>
+<section id="story" class="page active">
+<div class="hero"><h2>🌿 Iemācies stāstu kā komiksu</h2><p>Spied uz kartītēm un izlasi Maijas piedzīvojumu secību. Pēc tam pārbaudi sevi testā.</p></div>
+<div class="grid" id="comic"></div>
+<div class="card challenge" style="margin-top:18px"><h3>🧠 Atceries galveno</h3><p><b>Maija</b> ir darbīga, drosmīga, labsirdīga un nealkst bagātības. Viņas spēks rodas no labajiem darbiem. Viņai svarīgāks par zelta pili un greznām drānām ir <b>Varis</b> un vēlme palīdzēt.</p></div>
+</section>
+
+<section id="poems" class="page">
+<div class="hero"><h2>🎵 Dzejoļi un tautasdziesmas</h2><p>Lasi pa daļām, aizsedz tekstu un mēģini pateikt nākamo rindu. Zem katra fragmenta ir jautājums.</p></div>
+<div class="grid">
+<div class="card poem"><h3>🌱 Maijas dziesma par pupu</h3><p>Pupa aug! Mana pupa aug!<br>Pa zaru zariem,<br>Pa lapu lapām,<br>Pa ziedu ziediem.<br>Sveiki, mīļie tētiņi!</p><button class="btn reveal" data-answer="Pupa aug arvien augstāk; tā kļūst par ceļu no pazemes uz virszemi un tālāk uz debesīm.">Ko nozīmē pupa? 👀</button><div class="feedback"></div></div>
+<div class="card poem"><h3>☁️ Tautasdziesma par garo pupu</h3><p>Tupu, tupu, rāpu, rāpu<br>Pa bāliņa pupu dārzu:<br>Stādīj’ vienu baltu pupu<br>Pašā kalna galiņā.<br>Tā uzauga tieva, gara<br>Līdz pašām debesīm.<br>Es uzkāpu debesīs<br>Pa tiem pupu žuburiem;<br>Es redzēju Dieva dēlu<br>Kumeliņu seglojam.</p><button class="btn reveal" data-answer="Gan tautasdziesmā, gan lugā gara pupa savieno zemi ar debesīm un ļauj cilvēkam nokļūt augšup.">Kā tā saistīta ar lugu? 👀</button><div class="feedback"></div></div>
+<div class="card poem"><h3>⚡ Tautasdziesmas fragments</h3><p>Labrīt, labrīt, Dieva dēls,<br>Vai redzēji tēv’ ar māti?<br>— Tēvs ar māti Vāczemē<br>Saules meitai kāzas dzer.<br>Dieviņš ņēma Saules meitu,<br>Pērkons jāja panākšņos.<br>Pa vārtiem iejādams,<br>Nosper zelta ozoliņu.<br>Trīs gadiņi Saule raud,<br>Zelta zarus lasīdama.</p><p class="small">Mācies: izlasi 2 rindas → aizsedz → pasaki no galvas → pievieno nākamās 2.</p></div>
+</div></section>
+
+<section id="words" class="page"><div class="hero"><h2>💬 Svarīgākie vārdi</h2></div><div class="grid">
+<div class="card word"><h3>boze</h3><p>Runga — liela, smaga vāle, paresna nūja, spēķis.</p></div>
+<div class="card word"><h3>uzmest garu</h3><p>Uzliet ūdeni uz nokaitētiem akmeņiem, lai pirtī rastos tvaiks.</p></div>
+<div class="card word"><h3>maitas kauls</h3><p>Bojā gājuša dzīvnieka kauls.</p></div>
+<div class="card word"><h3>pišļi</h3><p>Atliekas no kā satrūdējuša.</p></div>
+<div class="card word"><h3>panākšņi</h3><p>Kāzinieki no līgavas radu un draugu puses.</p></div>
+<div class="card word"><h3>spuri / lēvaiņi</h3><p><b>Spuri</b> — spuras. <b>Lēvaiņi</b> — netīrumi.</p></div>
+</div></section>
+
+<section id="book" class="page"><div class="hero"><h2>✍️ Grāmatas jautājumi</h2><p>Spied “Parādi atbildi”, pēc tam mēģini izstāstīt saviem vārdiem.</p></div><div class="grid" id="bookqs"></div></section>
+
+<section id="quiz" class="page"><div class="hero"><h2>🎯 Pārbaudi sevi</h2><p>Atbildi uz jautājumiem un krāj punktus.</p></div>
+<div class="card qbox"><div class="progress"><div id="bar"></div></div><div class="small">Jautājums <span id="qn">1</span> no <span id="qt"></span></div><h2 id="question"></h2><div class="answers" id="answers"></div><div id="fb" class="feedback"></div><button id="next" class="btn primary" style="display:none;margin-top:12px">Nākamais →</button></div></section>
+</main>
+<script>
+const stories=[
+["🌲👧","Maija nonāk pie Veļēnu vecīša","Maija ir drosmīga un labsirdīga. Viņa nebaidās no svešās pasaules un vēlas atrast Vari."],
+["👴🧔👴","Trīs vecīši","Pie Veļēnu vecīša ir arī Kaupiņš un Samtcepure. Viņi ilgi gaida pārmaiņas."],
+["🧹🔥","Maija palīdz","Maija palīdz vecīšiem un per viņus pirtī. Viņa izmanto prātu un to, ko atrod apkārt."],
+["✨👗","Labie darbi dod spēku","Ceļā paveiktie labie darbi Maijai atnes noderīgas lietas. Veļēnu vecītis uzsver: spēks rodas tikai vienreiz — tas ir jānopelna."],
+["🪞👀","Burvju spogulis","Kad Maijai piedāvā algu, viņa neizvēlas zīda drānas vai zelta pili. Viņa izvēlas spoguli, lai redzētu, kā klājas Varim."],
+["🔥🧑","Varis ir ellē","Spogulī Maija ierauga Vari. Viņa nolemj viņam palīdzēt un prasa ceļu uz elli."],
+["🌱☁️","Gara pupa","Maija uzmin mīklu par pupu. Viņa iestāda pupas graudu, un pupa aug arvien augstāk."],
+["☁️👑","Pie Laimas","Pa pupas zariem Maija nokļūst debesīs un atdod Laimai atrasto zelta ozola galotni."],
+["💛➡️🔥","Maija izvēlas palīdzēt","Lai gan Laima piedāvā Maijai palikt debesīs, Maija atsakās. Viņa lūdz padomu un dodas palīdzēt Varim."]
+];
+const comic=document.getElementById("comic");
+stories.forEach((s,i)=>{comic.innerHTML+=`<div class="card comic"><div class="num">${i+1}</div><div class="art">${s[0]}</div><div class="txt"><b>${s[1]}</b><p>${s[2]}</p></div></div>`});
+
+const bqs=[
+["6.2. Kā saprast vārdu savienojumu “baltā ēna”?","Tā vecīši uztver Maiju — gaišu cilvēku, kas ienāk viņu tumšajā pasaulē. “Baltā ēna” uzsver pretstatu starp Maijas gaismu/labestību un veļu pasaules tumsu."],
+["6.3. Kāpēc vecīši lūdz, lai Maija viņus noper pirtiņā?","Viņi ir ļoti seni, netīri un ilgojas kļūt tīri un atjaunoti. Pirts lugā saistās ar attīrīšanos un pārvērtībām."],
+["6.4. Kā Maija izturas pret vecīšu piedāvāto algu? Ko tas liecina par Maiju?","Viņa neizvēlas zīda drānas vai zelta pili. Maijai mantas nav galvenais; viņa izvēlas iespēju uzzināt par Vari. Tas rāda viņas nesavtību un rūpes par citiem."],
+["6.5. Izskaidro Maijas vārdus par zīda drānām un darbu.","Maija uzskata, ka greznība pati par sevi nav vērtība. Viņai svarīgāks ir darbs, vienkāršība un tas, ka cilvēks dara labu."],
+["6.6. Kādu algu tu gribētu saņemt Maijas vietā?","Šis ir personiska viedokļa jautājums. Atbildē svarīgi pamatot savu izvēli."],
+["6.7. Ko Maija grib redzēt burvju spogulī?","Viņa grib redzēt, kā klājas Varim. Tas parāda, ka viņa par viņu rūpējas."],
+["8. Kas ir minējuma atbilde?","Pupa — gara pupa, pa kuras zariem var kāpt augšup līdz debesīm."],
+["9. Kādēļ Maija šo vietu sauc par nelabu pasauli?","Maija redz elli — vietu ar katliem un ugunskuriem, kur nonācis Varis. Tā ir ciešanu un soda vieta."],
+["10. Kā saistīti vārdi “zeme”, “spēks” un “darbs”?","Maijas spēks nāk no zemes un no darba. Labie darbi dod viņai spēku un palīdz pārvarēt grūtības."]
+];
+const book=document.getElementById("bookqs");
+bqs.forEach((x,i)=>book.innerHTML+=`<div class="card"><h3>${x[0]}</h3><button class="btn reveal" data-answer="${x[1].replaceAll('"','&quot;')}">Parādi atbildi</button><div class="feedback"></div></div>`);
+
+document.addEventListener("click",e=>{
+ if(e.target.matches("nav button")){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));document.getElementById(e.target.dataset.page).classList.add("active");e.target.classList.add("active");window.scrollTo(0,0)}
+ if(e.target.matches(".reveal")){let f=e.target.nextElementSibling;f.innerHTML="💡 "+e.target.dataset.answer;f.style.display="block"}
+});
+
+const qs=[
+["Kuru algu Maija izvēlas?",["Zelta pili","Zīda drānas","Burvju spoguli","Naudu"],2,"Viņa vēlas redzēt, kā klājas Varim."],
+["Ko Maija ierauga spogulī?",["Vari ellē","Laimu","Zelta pili","Savu māju"],0,"Spogulis parāda, ka Varis ir ellē."],
+["Kas ir mīklas atminējums, kas ved augšup?",["Ozols","Pupa","Liepa","Ērkšķis"],1,"Tā ir gara pupa."],
+["Ko Maija dara ar pupas graudu?",["Apēd","Atdod Varim","Iestāda baltajā smiltī","Iemet ugunī"],2,"Pupa izaug un kļūst par ceļu augšup."],
+["Kāpēc Maija atsakās no Laimas piedāvājuma palikt debesīs?",["Viņai tur nepatīk","Viņa vēlas palīdzēt Varim","Viņa grib zelta pili","Viņa baidās no Laimas"],1,"Maija turpina rūpēties par Vari."],
+["Kas vislabāk raksturo Maiju?",["Mantkārīga un slinka","Drosmīga, darbīga un labsirdīga","Ļauna un viltīga","Vienaldzīga"],1,"Viņas izvēles un labie darbi to atkārtoti parāda."],
+["Kā saistīti darbs un spēks?",["Darbs atņem spēku","Spēks rodas no labiem darbiem un zemes","Tie nav saistīti","Spēku var tikai nopirkt"],1,"Lugā Maijas spēks saistīts ar zemi, darbu un nopelnīto labo."],
+["Kas ir Kaupiņš un Samtcepure?",["Maijas brāļi","Vecīši Veļēnu pasaulē","Laimas kalpi","Vara draugi"],1,"Viņi ir starp vecīšiem, kurus Maija sastop."],
+["Ko pupa simboliski savieno?",["Divas mājas","Zemi un debesis","Divas upes","Pilsētu un mežu"],1,"Gan lugā, gan tautasdziesmā gara pupa ļauj kāpt līdz debesīm."],
+["Ko Maijas atteikšanās no bagātībām parāda?",["Viņa nesaprot bagātību","Viņa ir nesavtīga un cilvēki viņai svarīgāki par mantām","Viņa grib vēl lielāku pili","Viņa neko nevēlas"],1,"Viņas galvenais mērķis ir palīdzēt Varim."]
+];
+let qi=0,stars=0,locked=false;const $=id=>document.getElementById(id);$("qt").textContent=qs.length;
+function draw(){locked=false;let q=qs[qi];$("qn").textContent=qi+1;$("question").textContent=q[0];$("answers").innerHTML="";$("fb").style.display="none";$("next").style.display="none";$("bar").style.width=(qi/qs.length*100)+"%";q[1].forEach((a,j)=>{let b=document.createElement("button");b.textContent=a;b.onclick=()=>answer(j,b);$("answers").appendChild(b)})}
+function answer(j,b){if(locked)return;locked=true;let q=qs[qi];[...$("answers").children].forEach((x,k)=>{x.disabled=true;if(k===q[2])x.classList.add("good");else if(k===j)x.classList.add("bad")});if(j===q[2]){stars+=10;$("stars").textContent=stars;$("fb").innerHTML="✅ <b>Pareizi!</b> "+q[3]}else $("fb").innerHTML="❌ <b>Ne gluži.</b> "+q[3];$("fb").style.display="block";$("next").style.display="inline-block"}
+$("next").onclick=()=>{qi++;if(qi>=qs.length){$("question").innerHTML=`🏆 Gatavs! Tu ieguvi ${stars} no ${qs.length*10} punktiem.`;$("answers").innerHTML='<button onclick="location.reload()">Sākt no jauna</button>';$("fb").style.display="none";$("next").style.display="none";$("bar").style.width="100%"}else draw()};draw();
+</script></body></html>
